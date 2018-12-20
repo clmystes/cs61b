@@ -52,4 +52,40 @@ class Planet {
         double dy = p.yyPos - this.yyPos;
         return (f * dy) / r;
     }
+
+    public double calcNetForceExertedByX(Planet[] ps) {
+        double f = 0;
+        for (Planet p : ps) {
+            if (p.equals(this) == false) {
+                f += calcForceExertedByX(p);
+            }
+        }
+        return f;
+    }
+
+    public double calcNetForceExertedByY(Planet[] ps) {
+        double f = 0;
+        for (Planet p : ps) {
+            if (p.equals(this) == false) {
+                f += calcForceExertedByY(p);
+            }
+        }
+        return f;
+    }
+
+    public void update(double dt, double fX, double fY) {
+        double aX = fX / this.mass;
+        double aY = fY / this.mass;
+
+        this.xxVel = this.xxVel + (aX * dt);
+        this.yyVel = this.yyVel + (aY * dt);
+
+        this.xxPos = this.xxPos + (this.xxVel * dt);
+        this.yyPos = this.yyPos + (this.yyVel * dt);
+    }
+
+    public void draw() {
+        String path = "images/" + this.imgFileName;
+        StdDraw.picture(this.xxPos, this.yyPos, path);
+    }
 }
