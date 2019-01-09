@@ -1,3 +1,5 @@
+import org.junit.Test;
+
 /**
  * Class with 2 ways of doing Counting sort, one naive way and one "better" way
  *
@@ -66,7 +68,56 @@ public class CountingSort {
      * @param arr int array that will be sorted
      */
     public static int[] betterCountingSort(int[] arr) {
-        // TODO make counting sort work with arrays containing negative numbers.
-        return null;
+        // find number of negative and positive integers
+        int nPos = 0, nNeg = 0;
+        for (int i : arr) {
+            if (i >= 0) {
+                nPos++;
+            } else {
+                nNeg++;
+            }
+        }
+        // store negative values as its inverse
+        int[] pos = new int[nPos], neg = new int[nNeg];
+        int kPos = 0, kNeg = 0;
+        for (int i : arr) {
+            if (i >= 0) {
+                pos[kPos] = i;
+                kPos++;
+            } else {
+                neg[kNeg] = -i;
+                kNeg++;
+            }
+        }
+        // sort positive and negative numbers separately, then combine
+        int[] posSorted = new int[0];
+        int[] negSorted = new int[0];
+        if (nPos != 0) {
+            posSorted = naiveCountingSort(pos);
+        }
+        if (nNeg != 0) {
+            negSorted = naiveCountingSort(neg);
+        }
+        int[] sorted = new int[arr.length];
+        int k = 0;
+        for (int i = 0; i < negSorted.length; i++) {
+            sorted[k] = -negSorted[negSorted.length - 1 - i];
+            k++;
+        }
+        for (int i : posSorted) {
+            sorted[k] = i;
+            k++;
+        }
+        return sorted;
+    }
+
+    @Test
+    public void countingSortTest() {
+        int[] toSort = new int[]{9, -6, 15, 0, 3, 0, -2, 101};
+        CountingSortTester.assertIsSorted(betterCountingSort(toSort));
+        toSort = new int[]{-9, -6, -15, -3, -1, -2, -101};
+        CountingSortTester.assertIsSorted(betterCountingSort(toSort));
+        toSort = new int[]{9, 6, 15, 3, 7, 2, 101};
+        CountingSortTester.assertIsSorted(betterCountingSort(toSort));
     }
 }

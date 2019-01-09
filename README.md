@@ -1,8 +1,10 @@
 # cs61b
 
-Complete all labs and projects with the exception of proj2, proj3.
+Complete most of labs and projects.
 
 ## todo
 
 - proj2: BYoG(Build Your own Game)
 - proj3: BearMaps
+- lab14
+- lab15
