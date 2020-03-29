@@ -1,3 +1,5 @@
+import examples.StdDraw;
+
 class NBody {
     public static double readRadius(String path) {
         In in = new In(path);
@@ -38,7 +40,7 @@ class NBody {
             p.draw();
         }
 
-//        enableDoubleBuffering();
+        StdDraw.enableDoubleBuffering();
 
         int time = 0;
         while (time != T) {

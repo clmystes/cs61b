@@ -1,10 +1,7 @@
 # cs61b
 
-Complete most of labs and projects.
+<!-- Complete! -->
 
-## todo
+## Resouce
 
-- proj2: BYoG(Build Your own Game)
-- proj3: BearMaps
-- lab14
-- lab15
+https://sp18.datastructur.es/
