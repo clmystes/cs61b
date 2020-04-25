@@ -1,40 +1,40 @@
-public class LinkedListDeque<Item> implements Deque<Item> {
-    private class Node {
-        Node prev;
-        Node next;
-        Item item;
+public class LinkedListDeque<T> implements Deque<T> {
+    private int size;
+    private Node sentinel;
 
-        public Node(Node p, Node n, Item i) {
-            prev = p;
-            next = n;
-            item = i;
+    private class Node {
+        public T value;
+        public Node prev;
+        public Node next;
+
+        public Node(T value, Node prev, Node next) {
+            this.prev = prev;
+            this.next = next;
+            this.value = value;
         }
     }
 
-    private Node sentinel;
-    private int size;
-
     public LinkedListDeque() {
-        size = 0;
-        sentinel = new Node(null, null, null);
-        sentinel.prev = sentinel;
-        sentinel.next = sentinel;
+       size = 0;
+       sentinel = new Node(null, null, null);
+       sentinel.next = sentinel;
+       sentinel.prev = sentinel;
     }
 
     @Override
-    public void addFirst(Item item) {
-        Node newFirst = new Node(sentinel, sentinel.prev, item);
-        sentinel.prev.prev = newFirst;
-        sentinel.prev = newFirst;
-        size += 1;
+    public void addFirst(T item) {
+        size++;
+        Node oldFirst = sentinel.next;
+        sentinel.next = new Node(item, sentinel, sentinel.next);
+        oldFirst.prev = sentinel.next;
     }
 
     @Override
-    public void addLast(Item item) {
-        Node newLast = new Node(sentinel.next, sentinel, item);
-        sentinel.next.next = newLast;
-        sentinel.next = newLast;
-        size += 1;
+    public void addLast(T item) {
+        size++;
+        Node oldLast = sentinel.prev;
+        sentinel.prev = new Node(item, sentinel.prev, sentinel);
+        oldLast.next = sentinel.prev;
     }
 
     @Override
@@ -49,52 +49,48 @@ public class LinkedListDeque<Item> implements Deque<Item> {
 
     @Override
     public void printDeque() {
-        Node cur = sentinel.prev;
+        Node cur = sentinel.next;
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            str.append(cur.item).append(" ");
+            str.append(cur.value).append(" ");
             cur = cur.next;
         }
         System.out.println(str);
     }
 
     @Override
-    public Item removeFirst() {
-        Item result = sentinel.prev.item;
-        Node second = sentinel.prev.next;
-        second.prev = sentinel;
-        sentinel.prev = second;
-        size -= 1;
-        return result;
+    public T removeFirst() {
+        Node prevFirst = sentinel.next;
+        sentinel.next = sentinel.next.next;
+        sentinel.next.prev = sentinel;
+        size--;
+        return prevFirst.value;
     }
 
     @Override
-    public Item removeLast() {
-        Item result = sentinel.next.item;
-        Node ls = sentinel.next.prev;
-        ls.next = sentinel;
-        sentinel.next = ls;
-        size -= 1;
-        return result;
+    public T removeLast() {
+        Node prevLast = sentinel.prev;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next = sentinel;
+        size--;
+        return prevLast.value;
     }
 
     @Override
-    public Item get(int index) {
-        Node cur = sentinel.prev;
+    public T get(int index) {
+        Node item = sentinel;
         for (int i = 0; i < index; i++) {
-            cur = cur.next;
+            item = item.next;
         }
-        return cur.item;
+        return item.value;
     }
 
-    public Item getRecursive(int index) {
-        return getRecursive(index, sentinel.prev);
+    private T getRecursive(int index, Node node) {
+        if(index == 0) return node.value;
+        return getRecursive(--index, node.next);
     }
 
-    private Item getRecursive(int index, Node n) {
-        if (index == 0) {
-            return n.item;
-        }
-        return getRecursive(index - 1, n.next);
-    }
+    public T getRecursive(int index) {
+        return getRecursive(index, sentinel.next);
+    };
 }

@@ -101,15 +101,18 @@ public class IntList {
     }
 
     public static IntList reverse(IntList A) {
-        A = IntList.reverse(A, null);
-        return A;
-    }
-
-    private static IntList reverse(IntList A, IntList B) {
         if (A == null) {
-            return B;
+            return null;
         }
-        return reverse(A.rest, new IntList(A.first, B));
+
+        IntList ret = null;
+        while(A != null) {
+            IntList rest = A.rest;
+            A.rest = ret;
+            ret = A;
+            A = rest;
+        }
+        return ret;
     }
 
 

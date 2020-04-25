@@ -2,6 +2,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import javax.swing.text.html.InlineView;
+
 public class IntListTest {
 
     /**
@@ -66,11 +68,23 @@ public class IntListTest {
         assertEquals(IntList.of(1, 2, 3), A);
     }
 
+    /**
+     * 1. this function will return the revered list
+     * 2. if input null will return null
+     * 3. this.function is destructive
+     */
+
     @Test
     public void testReverse() {
         IntList A = IntList.of(1, 2, 3);
         IntList reverseA = IntList.of(3, 2, 1);
         assertEquals(reverseA, IntList.reverse(A));
+
+        IntList B = IntList.of(1, 2, 3);
+        IntList.reverse(B);
+        assertNotEquals(B, IntList.of(1, 2, 3));
+
+        assertEquals(null, IntList.reverse(null));
     }
 
     /** If you're running this from the command line, you'll need

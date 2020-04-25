@@ -1,35 +1,54 @@
-public class ArrayDeque<Item> implements Deque<Item> {
-    private Item[] items;
-    private int size;
-    private int nextFirst;
-    private int nextLast;
-    private static final int INITIAL_CAPACITY = 8;
+public class ArrayDeque<T> implements Deque<T> {
+    private T[] array;
+    private int size = 0;
+    private final static int INITIAL_CAPACITY = 8;
+    private int nextFirstIdx = 0;
+    private int nextLastIdx = 1;
 
     public ArrayDeque() {
-        size = 0;
-        nextFirst = 0;
-        nextLast = 1;
-        items = (Item[]) new Object[INITIAL_CAPACITY];
+        array = (T[]) new Object[INITIAL_CAPACITY];
     }
 
     @Override
-    public void addFirst(Item item) {
-        if (isFull()) {
-            extend();
+    public void addFirst(T item) {
+        if(isFull()) {
+           resize(size * 2);
         }
-        items[nextFirst] = item;
-        // 保证 nextFirst 不会越界
-        nextFirst = minusOne(nextFirst);
+        array[nextFirstIdx] = item;
+        nextFirstIdx = minusOne(nextFirstIdx);
         size++;
     }
 
-    @Override
-    public void addLast(Item item) {
-        if (isFull()) {
-            extend();
+    private int minusOne(int index) {
+        return Math.floorMod(index - 1, array.length);
+    }
+
+    private void resize(int capacity) {
+        T[] newArr = (T[]) new Object[capacity];
+        int first = addOne(nextFirstIdx);
+        for (int i = 0; i < size; i++) {
+            newArr[i] = array[first];
         }
-        items[nextLast] = item;
-        nextLast = plusOne(nextLast);
+        array = newArr;
+        nextFirstIdx = array.length - 1;
+        nextLastIdx = size;
+    }
+
+    private int addOne(int index) {
+        return Math.floorMod(index + 1, array.length);
+    }
+
+    private boolean isFull() {
+        return size == array.length;
+    }
+
+    @Override
+    public void addLast(T item) {
+        if(isFull()) {
+            resize(size * 2);
+        }
+        array[nextLastIdx] = item;
+        nextLastIdx = addOne(nextLastIdx);
         size++;
     }
 
@@ -45,77 +64,41 @@ public class ArrayDeque<Item> implements Deque<Item> {
 
     @Override
     public void printDeque() {
-        for (int i = plusOne(nextFirst); i != nextLast; i = plusOne(i)) {
-            System.out.print(items[i] + " ");
+        StringBuilder str = new StringBuilder();
+        int first = addOne(nextFirstIdx);
+        for (int i = 0; i < size; i++) {
+            str.append(array[first]).append(" ");
+            first = addOne(first);
         }
+        System.out.println(str);
     }
 
     @Override
-    public Item removeFirst() {
-        nextFirst = plusOne(nextFirst);
-        Item r = items[nextFirst];
-        items[nextFirst] = null;
+    public T removeFirst() {
+        T removed = array[addOne(nextFirstIdx)];
+        nextFirstIdx = addOne(nextFirstIdx);
         size--;
-
-        if (isSparse()) {
-            shrink();
-        }
-        return r;
-    }
-
-    @Override
-    public Item removeLast() {
-        nextLast = minusOne(nextLast);
-        Item r = items[nextLast];
-        items[nextLast] = null;
-        size--;
-
-        if (isSparse()) {
-            shrink();
-        }
-        return r;
-    }
-
-    @Override
-    public Item get(int index) {
-        Item item = null;
-        for (int i = nextFirst; i < index; i++) {
-            item = items[i];
-        }
-        return item;
-    }
-
-    private boolean isFull() {
-        return size == items.length;
-    }
-
-    private void extend() {
-        resize(size * 2);
-    }
-
-    private int minusOne(int n) {
-        return Math.floorMod(n - 1, items.length);
-    }
-
-    private int plusOne(int n) {
-        return Math.floorMod(n + 1, items.length);
-    }
-
-    private void resize(int n) {
-        int from = plusOne(nextFirst);
-        int to = minusOne(nextLast);
-        Item[] r = (Item[]) new Object[n];
-        for (int i = from; i != to; plusOne(i)) {
-            r[i] = items[i];
-        }
-        items = r;
+        shrink();
+        return removed;
     }
 
     private void shrink() {
-        resize(items.length / 2);
+       if(size > 16 && (array.length / 4 > size)) {
+           resize(array.length / 2);
+       }
     }
 
-    private boolean isSparse() {
-        return items.length >= 16 && size() < items.length / 4;
+    @Override
+    public T removeLast() {
+        T removed = array[minusOne(nextLastIdx)];
+        nextLastIdx = minusOne(nextLastIdx);
+        size--;
+        shrink();
+        return removed;
+    }
+
+    @Override
+    public T get(int index) {
+        return array[index];
     }
 }
