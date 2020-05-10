@@ -23,13 +23,16 @@ public class TestPalindrome {
         assertTrue(palindrome.isPalindrome(""));
         assertTrue(palindrome.isPalindrome("a"));
         assertTrue(palindrome.isPalindrome("racecar"));
+        assertTrue(palindrome.isPalindrome("noon"));
+        assertFalse(palindrome.isPalindrome("nooN"));
         assertFalse(palindrome.isPalindrome("aaaaab"));
+        assertFalse(palindrome.isPalindrome("horse"));
         assertFalse(palindrome.isPalindrome("aA"));
 
         assertTrue(palindrome.isPalindrome("", offByOne));
         assertTrue(palindrome.isPalindrome("a", offByOne));
-        assertTrue(palindrome.isPalindrome("racecar", offByOne));
-        assertFalse(palindrome.isPalindrome("aaaaab", offByOne));
-        assertFalse(palindrome.isPalindrome("aA", offByOne));
+        assertTrue(palindrome.isPalindrome("ab", offByOne));
+        assertTrue(palindrome.isPalindrome("rq", offByOne));
+        assertFalse(palindrome.isPalindrome("racecar", offByOne));
     }
 }
